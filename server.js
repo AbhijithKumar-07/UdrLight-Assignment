@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 // Load env variables
 dotenv.config();
@@ -8,6 +9,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // Connect Database
@@ -25,6 +27,18 @@ connectDB();
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tasks', require('./routes/tasks'));
+
+// Welcome Route for root URL
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Welcome to the Task Management API!', 
+        status: 'Online',
+        endpoints: {
+            auth: '/api/auth',
+            tasks: '/api/tasks'
+        }
+    });
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
